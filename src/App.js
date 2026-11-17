@@ -54,13 +54,17 @@ function App() {
 
   }
 
-
-
+  function handleAddTodo(todo) {
+    console.log(todo)
+    const id = Math.floor(Math.random() *10000) + 1
+    const newTodo = {id, ...todo}
+    setTodos([...todos, newTodo])
+  }
 
   return (
     <div className="appp">
       <Header />
-      {/* <AddTodo /> */}
+      <AddTodo addTodo={handleAddTodo}/>
       <Section>
         <p class="count">x todos, x done</p>
 
@@ -81,29 +85,49 @@ function Header() {
   )
 }
 
-// function AddTodo() {
-//   return (
-//     <form class="add-form" aria-label="Add a todo">
-//       <div class="field field-title">
-//         <label for="title">Title</label>
-//         <input id="title" name="title" type="text" placeholder="Water the plants" required />
-//       </div>
+function AddTodo({addTodo}) {
+  const [title, setTitle] = useState("")
+  const [userId, setUserId] = useState(1)
+  const [completed, setCompleted] = useState()
 
-//       <div class="field field-user">
-//         <label for="userId">User ID</label>
-//         <input id="userId" name="userId" type="number" min="1" value="1" required />
-//       </div>
+  function handleSubmit(e) {
+    e.preventDefault()
 
-//       <label class="check" for="completed">
-//         <input id="completed" name="completed" type="checkbox" />
-//         <span class="check-box" aria-hidden="true"></span>
-//         Already done
-//       </label>
+    if (!title) {
+      alert("Add a title")
+      return
+    }
 
-//       <button type="submit" class="btn">Add todo</button>
-//     </form>
-//   )
-// }
+    addTodo({title, userId, completed})
+
+    setTitle("")
+    setUserId(1)
+    setCompleted(false)
+  }
+
+  return (
+    <form class="add-form" aria-label="Add a todo" onSubmit={handleSubmit}>
+      <div class="field field-title">
+        <label for="title">Title</label>
+        <input value={title} onChange={(e) => setTitle(e.target.value)} id="title" name="title" type="text" placeholder="Water the plants" required />
+      </div>
+
+      <div class="field field-user">
+        <label for="userId">User ID</label>
+        <input value={userId} onChange={(e) => setUserId(e.target.value)} id="userId" name="userId" type="number" min="1" required />
+      </div>
+
+      <label class="check" for="completed">
+        <input value={completed} checked={completed} onChange={(e) => setCompleted(e.currentTarget.checked)} id="completed" name="completed" type="checkbox" />
+        <span class="check-box" aria-hidden="true"></span>
+        Already done
+      </label>
+
+      <button type="submit" class="btn">Add todo</button>
+    </form>
+  )
+}
+
 
 function Section({children}) {
   return (
